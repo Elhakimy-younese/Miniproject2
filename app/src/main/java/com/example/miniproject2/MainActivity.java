@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -29,34 +30,32 @@ public class MainActivity extends AppCompatActivity {
         tvstartactQuots = findViewById(R.id.tvstartactQuots);
         tvstartactAuther = findViewById(R.id.tvstartactAuther);
         Btnstartactpass = findViewById(R.id.btnstartactpass);
+
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://dummyjson.com/quotes/random";
 
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            tvstartactQuots.setText(jsonObject.getString("quote"));
-                            tvstartactAuther.setText(jsonObject.getString("author"));
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,
+                response -> {
+                    try {
+                        tvstartactQuots.setText(response.getString("quote"));
+                        tvstartactAuther.setText(response.getString("author"));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                tvstartactQuots.setText("That didn't work!");
             }
         });
-        // Set the tag on the request.
-        stringRequest.setTag("TAG");
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+
+
+
+
+
+
+        queue.add(jsonObjectRequest);
 
         Btnstartactpass.setOnClickListener(v -> {
             finish();
