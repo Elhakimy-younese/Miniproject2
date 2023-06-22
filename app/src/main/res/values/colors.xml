@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="LightSalmon">#FFA07A</color>
+    <color name="plum">#DDA0DD</color>
+    <color name="PaleGreen">#98FB98</color>
+    <color name="CornflowerBlue">#6495ED</color>
+    <color name="Default">#FFFFFFFF</color>
 </resources>
