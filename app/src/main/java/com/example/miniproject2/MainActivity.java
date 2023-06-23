@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     Button Btnstartactpass;
     ToggleButton tbstartactpinunpin;
     SharedPreferences sharedPreferences;
+    Spinner spinner;
+    SharedPreferences sharedPreferencescolor;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -38,6 +40,62 @@ public class MainActivity extends AppCompatActivity {
         tvstartactAuthor = findViewById(R.id.tvstartactAuther);
         Btnstartactpass = findViewById(R.id.btnstartactpass);
         tbstartactpinunpin = findViewById(R.id.tbstartactpinunpin);
+
+        spinner = findViewById(R.id.colorSpinner);
+
+        // work with spinner
+        String[] spinnerItems = {"Default ", "LightSalmon", "Plum", "PaleGreen", "CornflowerBlue"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerItems);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        sharedPreferencescolor = getSharedPreferences("color", MODE_PRIVATE);
+
+        // Set the initial background color based on the stored color in SharedPreferences
+        String storedColor = sharedPreferencescolor.getString("color", "Default");
+        int savedColorIndex = spinnerAdapter.getPosition(storedColor);
+        spinner.setSelection(savedColorIndex);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedColor = spinner.getSelectedItem().toString();
+                int backgroundColor;
+
+                switch (selectedColor) {
+                    case "LightSalmon":
+                        backgroundColor = getResources().getColor(R.color.LightSalmon);
+                        break;
+                    case "Plum":
+                        backgroundColor = getResources().getColor(R.color.plum);
+                        break;
+                    case "PaleGreen":
+                        backgroundColor = getResources().getColor(R.color.PaleGreen);
+                        break;
+                    case "CornflowerBlue":
+                        backgroundColor = getResources().getColor(R.color.CornflowerBlue);
+                        break;
+                    default:
+                        backgroundColor = getResources().getColor(R.color.white);
+                        break;
+                }
+
+                getWindow().getDecorView().setBackgroundColor(backgroundColor);
+
+                // Store the selected color in SharedPreferences
+                SharedPreferences.Editor coloreditor = sharedPreferencescolor.edit();
+                coloreditor.putString("color", selectedColor);
+                coloreditor.apply();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
 
 
 
