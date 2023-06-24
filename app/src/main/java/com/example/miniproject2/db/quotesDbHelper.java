@@ -92,8 +92,8 @@ public class quotesDbHelper extends SQLiteOpenHelper {
 
         while(cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow(QuotesContract.favoritequotes.COLUMN_NAME_ID));
-            String quote = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.favoritequotes.COLUMN_NAME_ID));
-            String author = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.favoritequotes.COLUMN_NAME_ID));
+            String quote = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.favoritequotes.COLUMN_NAME_QUOTES));
+            String author = cursor.getString(cursor.getColumnIndexOrThrow(QuotesContract.favoritequotes.COLUMN_NAME_AUTHOR));
             quotes.add(new Quote(id, quote, author));
         }
 
@@ -101,5 +101,6 @@ public class quotesDbHelper extends SQLiteOpenHelper {
 
         return quotes;
     }
+
 
 }
