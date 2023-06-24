@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,8 +22,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.miniproject2.db.quotesDbHelper;
+import com.example.miniproject2.modols.Quote;
 
 import org.json.JSONException;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     TextView tvstartactQuots, tvstartactAuthor;
@@ -58,23 +62,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        quotesDbHelper db = new quotesDbHelper(this);
-//        db.add(1, "q1", "a1");
-//        db.add(2, "q2", "a2");
-//        db.add(3, "q3", "a3");
-        db.getAll();
-        db.delete(2);
+
 
 
 
         sharedPreferences = getSharedPreferences("pinned-quote", MODE_PRIVATE);
 
-        String quote = sharedPreferences.getString("quote", null);
-        if (quote == null){
+        String pinnedquote = sharedPreferences.getString("quote", null);
+        if (pinnedquote == null){
             getRandomquote();
         }else {
             String author = sharedPreferences.getString("author", null);
-            tvstartactQuots.setText(quote);
+            tvstartactQuots.setText(pinnedquote);
             tvstartactAuthor.setText(author);
 
             tbstartactpinunpin.setChecked(true);
@@ -102,7 +101,17 @@ public class MainActivity extends AppCompatActivity {
             editor.commit();
         });
 
+        quotesDbHelper db = new quotesDbHelper(this);
+//        db.add(new Quote(1, "q1", "a1"));
 
+//        db.getAll();
+//        db.delete(20);
+
+        ArrayList<Quote> quotes = db.getAll();
+
+        for (Quote quote : quotes ) {
+            Log.e("SQLite", quote.toString());
+        }
 
     }
 
