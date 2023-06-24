@@ -132,14 +132,24 @@ public class MainActivity extends AppCompatActivity {
     private void getRandomquote() {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://dummyjson.com/quotes/28";
+        String url = "https://dummyjson.com/quotes/16";
         // Request a string response from the provided URL.
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,
                 response -> {
                     try {
-                        tvstartactid.setText(String.format("#%d", response.getInt("id")));
-                        tvstartactQuots.setText(response.getString("quote"));
-                        tvstartactAuthor.setText(response.getString("author"));
+
+                        int id = response.getInt("id");
+                        String quote = response.getString("quote");
+                        String author = response.getString("author");
+
+                        if (db.isFavorite(id))
+                            Ivstartactfavorite.setImageResource(R.drawable.like);
+                        else
+                            Ivstartactfavorite.setImageResource(R.drawable.dislike);
+
+                        tvstartactid.setText(String.format("#%d", id));
+                        tvstartactQuots.setText(quote);
+                        tvstartactAuthor.setText(author);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
