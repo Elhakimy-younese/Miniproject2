@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.miniproject2.db.quotesDbHelper;
 
 import org.json.JSONException;
 
@@ -57,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        quotesDbHelper db = new quotesDbHelper(this);
+//        db.add(1, "q1", "a1");
+        db.getAll();
 
 
 
