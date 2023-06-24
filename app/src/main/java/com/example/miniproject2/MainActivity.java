@@ -60,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         quotesDbHelper db = new quotesDbHelper(this);
 //        db.add(1, "q1", "a1");
+//        db.add(2, "q2", "a2");
+//        db.add(3, "q3", "a3");
         db.getAll();
+        db.delete(2);
 
 
 

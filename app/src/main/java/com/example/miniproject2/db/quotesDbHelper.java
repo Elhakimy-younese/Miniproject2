@@ -49,6 +49,17 @@ public class quotesDbHelper extends SQLiteOpenHelper {
 // Insert the new row, returning the primary key value of the new row
         db.insert(QuotesContract.favoritequotes.TABLE_NAME, null, values);
     }
+
+    public void delete(int id) {
+        SQLiteDatabase db = quotesDbHelper.this.getWritableDatabase();
+
+        String selection = QuotesContract.favoritequotes.COLUMN_NAME_ID + " = ?";
+
+        String[] selectionArgs = {Integer.toString(id)};
+
+        db.delete(QuotesContract.favoritequotes.TABLE_NAME, selection, selectionArgs);
+    }
+
     public void getAll() {
         SQLiteDatabase db = quotesDbHelper.this.getReadableDatabase();
 
