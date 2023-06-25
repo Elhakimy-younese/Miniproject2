@@ -74,7 +74,7 @@ public class quotesDbHelper extends SQLiteOpenHelper {
         ArrayList<Quote> quotes = new ArrayList<>();
         SQLiteDatabase db = quotesDbHelper.this.getReadableDatabase();
 
-        String Cursor;
+
         String[] projection = {
                 QuotesContract.favoritequotes.COLUMN_NAME_ID,
                 QuotesContract.favoritequotes.COLUMN_NAME_QUOTES,

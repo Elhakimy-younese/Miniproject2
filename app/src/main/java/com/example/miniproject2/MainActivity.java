@@ -27,6 +27,7 @@ import com.example.miniproject2.modols.Quote;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
     TextView tvstartactQuots, tvstartactAuthor;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Btnstartactpass.setOnClickListener(v -> {
-            finish();
+            getRandomquote();
         });
 
         tbstartactpinunpin.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -123,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Quote> quotes = db.getAll();
 
         for (Quote quote : quotes ) {
-//            Log.e("SQLite", quote.toString());
             Log.e("SQLite", quote.toString());
         }
 
@@ -132,7 +132,10 @@ public class MainActivity extends AppCompatActivity {
     private void getRandomquote() {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://dummyjson.com/quotes/16";
+        int randomNumber = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+        String url = String.format("https://dummyjson.com/quotes/%d", randomNumber);
+
+//        String url = "https://dummyjson.com/quotes/random";
         // Request a string response from the provided URL.
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,
                 response -> {
