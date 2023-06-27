@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final static int INVALIDE_ID = -1;
     TextView tvstartactQuots, tvstartactAuthor;
     Button Btnstartactpass;
     ToggleButton tbstartactpinunpin;
@@ -38,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView Ivstartactfavorite;
     quotesDbHelper db;
     TextView tvstartactid;
-    boolean isfavorite = false;
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "DefaultLocale"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,14 +56,19 @@ public class MainActivity extends AppCompatActivity {
         db = new quotesDbHelper(this);
 
 
+        //region like / dislike
         Ivstartactfavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = Integer.parseInt(tvstartactid.getText().toString().substring(1));
+                boolean isfavorite = db.isFavorite(id);
                 if (isfavorite){
+                    tbstartactpinunpin.setChecked(false);
                     Ivstartactfavorite.setImageResource(R.drawable.dislike);
 
                     db.delete(id );
+
+
 
                 }else {
                     Ivstartactfavorite.setImageResource(R.drawable.like);
@@ -71,27 +77,35 @@ public class MainActivity extends AppCompatActivity {
                     String author = tvstartactAuthor.getText().toString();
                     db.add(new Quote(id, quote, author ));
 
+
+
                 }
-                isfavorite = !isfavorite;
+//                isfavorite = !isfavorite;
             }
         });
+        //endregion
 
 
 
 
 
+        //region pin / unpin / sharedpreferences
         sharedPreferences = getSharedPreferences("pinned-quote", MODE_PRIVATE);
 
-        String pinnedquote = sharedPreferences.getString("quote", null);
-        if (pinnedquote == null){
+        int pinnedquoteid = sharedPreferences.getInt("id", INVALIDE_ID);
+
+        if (pinnedquoteid == INVALIDE_ID){
             getRandomquote();
         }else {
+            String pinnedquote = sharedPreferences.getString("quote", null);
             String author = sharedPreferences.getString("author", null);
+
+            tvstartactid.setText(String.format("#%d", pinnedquoteid));
             tvstartactQuots.setText(pinnedquote);
             tvstartactAuthor.setText(author);
 
-            tbstartactpinunpin.setChecked(true);
-        }
+            Ivstartactfavorite.setImageResource(db.isFavorite(pinnedquoteid)? R.drawable.like : R.drawable.dislike);
+}
 
         Btnstartactpass.setOnClickListener(v -> {
             getRandomquote();
@@ -99,40 +113,58 @@ public class MainActivity extends AppCompatActivity {
 
         tbstartactpinunpin.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-
+            int pinnedid = INVALIDE_ID;
             String Quote = null;
             String Author = null;
             if (isChecked){
+                pinnedid = Integer.parseInt(tvstartactid.getText().toString().substring(1)) ;
                 Quote = tvstartactQuots.getText().toString();
                 Author = tvstartactAuthor.getText().toString();
 
-            }else {
-                getRandomquote();
-            }
+                if (!db.isFavorite(pinnedid)) {
+                    Ivstartactfavorite.setImageResource(R.drawable.like);
 
+                    db.add(new Quote(pinnedid, Quote, Author));
+
+                    //region ToDo: Delete
+
+                    logFavoriteQuotes();
+
+                    //endregion
+                }
+
+
+            }else {
+//                getRandomquote();
+            }
+            editor.putInt("id", pinnedid);
             editor.putString("quote", Quote);
             editor.putString("author", Author);
             editor.commit();
         });
+        //endregion
 
 
 
 
-//        db.getAll();
-//        db.delete(20);
 
+//     TODO delete
+        logFavoriteQuotes();
+
+    }
+
+    private void logFavoriteQuotes() {
         ArrayList<Quote> quotes = db.getAll();
 
         for (Quote quote : quotes ) {
             Log.e("SQLite", quote.toString());
         }
-
     }
 
     private void getRandomquote() {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        int randomNumber = ThreadLocalRandom.current().nextInt(1, 3 + 1);
+        int randomNumber = ThreadLocalRandom.current().nextInt(1, 5 + 1);
         String url = String.format("https://dummyjson.com/quotes/%d", randomNumber);
 
 //        String url = "https://dummyjson.com/quotes/random";
